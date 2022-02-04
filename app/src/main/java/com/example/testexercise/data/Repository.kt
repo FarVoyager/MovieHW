@@ -8,4 +8,6 @@ interface Repository {
 
     fun repos(url: String): Flow<List<Repo>>
 
+    fun followers(url: String): Flow<List<Follower>>
+
 }

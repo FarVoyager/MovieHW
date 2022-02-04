@@ -15,4 +15,8 @@ class RepositoryImpl(
         flow {
             emit(restApi.getUserRepos(url))
         }
+
+    override fun followers(url: String): Flow<List<Follower>> = flow {
+        emit(restApi.getUserFollowers(url))
+    }
 }

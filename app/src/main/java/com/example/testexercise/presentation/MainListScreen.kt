@@ -1,10 +1,16 @@
 package com.example.testexercise.presentation
 
+import android.content.ClipData
+import android.content.Context
 import android.content.res.Resources
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,11 +23,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.contentColorFor
@@ -48,57 +57,94 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.example.testexercise.R
 import com.example.testexercise.domain.MainListViewModel
 import com.example.testexercise.domain.NavDestinations
+import com.example.testexercise.domain.isOnline
 import com.google.gson.Gson
+import org.koin.androidx.compose.getKoin
 import org.koin.androidx.compose.getViewModel
+import org.koin.core.parameter.parametersOf
 
+@RequiresApi(Build.VERSION_CODES.M)
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @ExperimentalCoilApi
 @Composable
-fun MainListScreen() {
-    val viewModel: MainListViewModel = getViewModel()
+fun MainListScreen(navController: NavController) {
+    val viewModel: MainListViewModel = getViewModel { parametersOf(navController) }
     val viewState by viewModel.viewState.collectAsState()
 
-    val navController = rememberNavController()
+    viewModel.checkInternetConnection(getKoin().get())
 
-    LazyColumn(
-        horizontalAlignment = Alignment.CenterHorizontally
-
-    ) {
-        stickyHeader {
-            androidx.compose.material.Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(10.dp),
-                color = Color.White
-            ) {
+    Scaffold {
+        if (!viewState.isOnline) {
+            val context = getKoin().get<Context>()
+            Column(modifier = Modifier.fillMaxSize()) {
                 Text(
                     modifier = Modifier
-                        .padding(20.dp)
-                        .wrapContentHeight(),
+                        .padding(start = 20.dp, end = 20.dp, top = 100.dp),
                     style = MaterialTheme.typography.h5,
                     textAlign = TextAlign.Center,
-                    text = "Список авторов GitHub API"
+                    text = "Нет соединения с интернетом"
                 )
-            }
-
-        }
-        items(viewState.authorsList) {
-            AuthorItem(
-                name = it.login.toString(),
-                imageUrl = it.avatarUrl.toString(),
-                onClick = {
-                    val json = Uri.encode(Gson().toJson(it))
-                    println("$json VVV")
-                    navController.navigate("${NavDestinations.DETAILS_ROUTE}/$json")
+                Button(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(30.dp),
+                    onClick = { viewModel.checkInternetConnection(context) }) {
+                    Text(text = "Попробовать снова")
                 }
-            )
+            }
+        } else {
+            LazyColumn(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                stickyHeader {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .shadow(10.dp),
+                        color = Color.White
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .padding(20.dp)
+                                .wrapContentHeight(),
+                            style = MaterialTheme.typography.h5,
+                            textAlign = TextAlign.Center,
+                            text = stringResource(R.string.main_list_header)
+                        )
+                    }
+                }
+                if (viewState.isLoading) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 150.dp),
+                            contentAlignment = Alignment.BottomCenter
+                        ) {
+                            CircularProgressIndicator(modifier = Modifier)
+                        }
+                    }
+                } else {
+                    items(viewState.authorsList) {
+                        AuthorItem(
+                            name = it.login,
+                            imageUrl = it.avatarUrl,
+                            onClick = {
+                                viewModel.onItemSelected(it)
+                            }
+                        )
+                    }
+                }
+            }
         }
+
     }
 }
 

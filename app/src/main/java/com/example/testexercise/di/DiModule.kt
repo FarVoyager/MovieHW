@@ -1,11 +1,17 @@
 package com.example.testexercise.di
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.testexercise.data.Author
 import com.example.testexercise.data.Repository
 import com.example.testexercise.data.RepositoryImpl
 import com.example.testexercise.data.RestApi
+import com.example.testexercise.domain.DetailsViewModel
 import com.example.testexercise.domain.MainListViewModel
 import com.example.testexercise.domain.NavDestinations
+import com.example.testexercise.domain.isOnline
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -19,13 +25,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object DiModule {
     fun getRetrofitModule() = module {
-//        single { Room.databaseBuilder(androidContext(), Database::class.java, "database").build() }
 
-        single {
-            get<Retrofit>().create(RestApi::class.java)
-        }
-
-        single<Retrofit> {
+        single<RestApi> {
             Retrofit.Builder()
                 .baseUrl("https://api.github.com")
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
@@ -43,17 +44,36 @@ object DiModule {
                         .build()
                 )
                 .build()
-//                .create(RestApi::class.java)
+                .create(RestApi::class.java)
         }
 
     }
 
-    fun geRepositoryModule() = module {
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun getInternetConnectionModule() = module {
+        factory { isOnline(androidContext()) }
+    }
+
+    fun getRepositoryModule() = module {
         single<Repository> { RepositoryImpl(restApi = get()) }
         single { NavHostController(androidContext()) }
         single { NavDestinations }
+    }
 
+    fun getViewModelModule() = module {
+        viewModel { (navController: NavController) ->
+            MainListViewModel(
+                navController = navController,
+                repository = get(),
+                navDestinations = get()
+            )
+        }
 
-        viewModel { MainListViewModel(repository = get(), navController = get(), navDestinations = get()) }
+        viewModel { (author: Author) ->
+            DetailsViewModel(
+                author = author,
+                repository = get()
+            )
+        }
     }
 }

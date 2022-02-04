@@ -11,4 +11,7 @@ interface RestApi {
 
     @GET
     suspend fun getUserRepos(@Url url: String): List<Repo>
+
+    @GET
+    suspend fun getUserFollowers(@Url url: String): List<Follower>
 }
