@@ -1,4 +1,4 @@
-package com.example.testexercise.domain
+package com.example.testexercise.utils
 
 import android.content.Context
 import android.net.ConnectivityManager

@@ -1,9 +1,11 @@
-package com.example.testexercise.domain
+package com.example.testexercise.domain.mainlist
 
-import com.example.testexercise.data.Author
+import com.example.testexercise.data.retrofit.Author
 
 data class MainListViewState(
     val isLoading: Boolean = true,
     val isOnline: Boolean = true,
+    val isOfflineLoaded: Boolean = false,
+
     val authorsList: List<Author> = listOf()
 )

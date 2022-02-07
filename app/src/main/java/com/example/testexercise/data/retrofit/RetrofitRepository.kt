@@ -1,8 +1,8 @@
-package com.example.testexercise.data
+package com.example.testexercise.data.retrofit
 
 import kotlinx.coroutines.flow.Flow
 
-interface Repository {
+interface RetrofitRepository {
 
     fun authors(): Flow<List<Author>>
 

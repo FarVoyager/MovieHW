@@ -1,7 +1,8 @@
-package com.example.testexercise.data
+package com.example.testexercise.utils
 
 import android.os.Bundle
 import androidx.navigation.NavType
+import com.example.testexercise.data.retrofit.Author
 import com.google.gson.Gson
 
 class ParamType : NavType<Author>(isNullableAllowed = false) {

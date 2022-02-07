@@ -1,4 +1,4 @@
-package com.example.testexercise
+package com.example.testexercise.common
 
 import android.app.Application
 import android.os.Build
@@ -19,7 +19,8 @@ class App : Application() {
                 DiModule.getRetrofitModule(),
                 DiModule.getRepositoryModule(),
                 DiModule.getViewModelModule(),
-                DiModule.getInternetConnectionModule()
+                DiModule.getInternetConnectionModule(),
+                DiModule.getDatabaseModule()
             )
         }
     }

@@ -1,4 +1,4 @@
-package com.example.testexercise
+package com.example.testexercise.common
 
 import android.os.Build
 import android.os.Bundle
@@ -14,8 +14,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import coil.annotation.ExperimentalCoilApi
-import com.example.testexercise.data.Author
-import com.example.testexercise.data.ParamType
+import com.example.testexercise.data.retrofit.Author
+import com.example.testexercise.utils.ParamType
 import com.example.testexercise.presentation.DetailsScreen
 import com.example.testexercise.presentation.MainListScreen
 

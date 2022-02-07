@@ -1,4 +1,4 @@
-package com.example.testexercise.data
+package com.example.testexercise.data.retrofit
 
 import android.os.Parcelable
 import com.google.gson.annotations.Expose

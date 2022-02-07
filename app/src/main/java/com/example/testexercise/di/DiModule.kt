@@ -4,28 +4,49 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import com.example.testexercise.data.Author
-import com.example.testexercise.data.Repository
-import com.example.testexercise.data.RepositoryImpl
-import com.example.testexercise.data.RestApi
-import com.example.testexercise.domain.DetailsViewModel
-import com.example.testexercise.domain.MainListViewModel
-import com.example.testexercise.domain.NavDestinations
-import com.example.testexercise.domain.isOnline
+import androidx.room.Room
+import com.example.testexercise.data.retrofit.Author
+import com.example.testexercise.data.retrofit.RetrofitRepository
+import com.example.testexercise.data.retrofit.RepositoryImpl
+import com.example.testexercise.data.retrofit.RestApi
+import com.example.testexercise.data.room.converter.AuthorDataConverter
+import com.example.testexercise.data.room.Database
+import com.example.testexercise.data.room.converter.RepoConverter
+import com.example.testexercise.data.retrofit.AuthorResponse
+import com.example.testexercise.data.retrofit.Repo
+import com.example.testexercise.data.retrofit.RepoResponse
+import com.example.testexercise.data.retrofit.converter.AuthorResponseConverter
+import com.example.testexercise.data.retrofit.converter.RepoResponseConverter
+import com.example.testexercise.data.retrofit.converter.ResponseConverter
+import com.example.testexercise.data.room.RoomRepository
+import com.example.testexercise.data.room.RoomRepositoryImpl
+import com.example.testexercise.domain.details.DetailsViewModel
+import com.example.testexercise.domain.mainlist.MainListViewModel
+import com.example.testexercise.utils.NavDestinations
+import com.example.testexercise.utils.isOnline
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 object DiModule {
-    fun getRetrofitModule() = module {
 
+    fun getDatabaseModule() = module {
+        single { Room.databaseBuilder(androidContext(), Database::class.java, "database").build() }
+        single { AuthorDataConverter() }
+        single { RepoConverter() }
+
+        single<RoomRepository> { RoomRepositoryImpl(db = get(), authorConverter = get(), repoConverter = get()) }
+    }
+
+    fun getRetrofitModule() = module {
         single<RestApi> {
             Retrofit.Builder()
                 .baseUrl("https://api.github.com")
@@ -55,7 +76,12 @@ object DiModule {
     }
 
     fun getRepositoryModule() = module {
-        single<Repository> { RepositoryImpl(restApi = get()) }
+
+        single<ResponseConverter<Author?, AuthorResponse>>(named("AUTHOR")) { AuthorResponseConverter() }
+        single<ResponseConverter<Repo?, RepoResponse>>(named("REPO")) { RepoResponseConverter() }
+
+        single<RetrofitRepository> { RepositoryImpl(restApi = get(), authorConverter = get(named("AUTHOR")), repoConverter = get(
+            named("REPO"))) }
         single { NavHostController(androidContext()) }
         single { NavDestinations }
     }
@@ -65,14 +91,18 @@ object DiModule {
             MainListViewModel(
                 navController = navController,
                 repository = get(),
-                navDestinations = get()
+                roomRepository = get(),
+                navDestinations = get(),
+                isOnlineOnStart = get()
             )
         }
 
         viewModel { (author: Author) ->
             DetailsViewModel(
                 author = author,
-                repository = get()
+                repository = get(),
+                roomRepository = get(),
+                isOnlineOnStart = get()
             )
         }
     }
