@@ -2,4 +2,15 @@
     <string name="app_name">TestExercise</string>
     <string name="details_screen_repositories_header">Repositories:</string>
     <string name="main_list_header">Список авторов GitHub API</string>
+    <string name="details_screen_offline_data_marking">Оффлайн-данные</string>
+    <string name="details_screen_empty_offline_data_text">Для этого автора нет сохраненных данных</string>
+    <string name="details_screen_empty_offline_data_btn_text">Назад</string>
+
+    <string name="main_list_screen_offline_mode_marking">Оффлайн-режим</string>
+    <string name="internet_connection_restored_toast_text">Интернет-соединение восстановлено</string>
+    <string name="internet_connection_off_toast_text">Интернет-соединение отсутствует</string>
+    <string name="no_internet_placeholder_try_again_btn_text">Попробовать снова</string>
+    <string name="no_internet_placeholder_load_offline_btn_text">Показать оффлайн-данные</string>
+    <string name="no_internet_placeholder_header">Нет соединения с интернетом</string>
+
 </resources>

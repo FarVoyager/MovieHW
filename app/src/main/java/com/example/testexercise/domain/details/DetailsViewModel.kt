@@ -2,6 +2,7 @@ package com.example.testexercise.domain.details
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.example.testexercise.data.retrofit.Author
 import com.example.testexercise.data.retrofit.RetrofitRepository
 import com.example.testexercise.data.room.RoomRepository
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 
 class DetailsViewModel(
     private val author: Author,
+    private val navController: NavController,
     private val repository: RetrofitRepository,
     private val roomRepository: RoomRepository,
     private val isOnlineOnStart: Boolean
@@ -30,17 +32,16 @@ class DetailsViewModel(
     private fun loadRepos() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.repos(author.reposUrl).catch {
-                println("Error while loading repos: ${it.message}")
+                Log.d("Exception","Error while loading repos: ${it.message}")
             }.collect { repos ->
                 if (repos.isEmpty()) Log.d(
                     "Unexpected Behavior",
                     "Received data is empty. Maybe some of Repo fields are null"
                 )
-
+                roomRepository.insertRepos(repos, author.id)
                 _viewState.update {
                     it.copy(reposList = repos, isLoading = false)
                 }
-                roomRepository.insertRepos(repos, author.id)
                 repository.followers(author.subscriptionsUrl).catch {
                     println("Error while loading followers: ${it.message}")
                 }.collect { followers ->
@@ -58,6 +59,11 @@ class DetailsViewModel(
             roomRepository.getReposByAuthorId(authorId).collect { repos ->
                 roomRepository.getAuthorSubscriptionsQtyByAuthorId(authorId)
                     .collect { followersQty ->
+                        if (repos.isEmpty() && followersQty == 0) {
+                            _viewState.update {
+                                it.copy(isOfflineDataEmpty = true)
+                            }
+                        }
                         _viewState.update {
                             it.copy(
                                 isLoading = false,
@@ -72,7 +78,6 @@ class DetailsViewModel(
     }
 
     override fun updateNetworkStatus(isOnline: Boolean) {
-        Log.d("VVV", "ISONLINE: $isOnline")
         _viewState.update {
             it.copy(isOnline = isOnline)
         }
@@ -83,6 +88,10 @@ class DetailsViewModel(
 
     override fun loadLastData() {
         loadReposOffline(author.id)
+    }
+
+    fun onBackPressed() {
+        navController.navigateUp()
     }
 
 }

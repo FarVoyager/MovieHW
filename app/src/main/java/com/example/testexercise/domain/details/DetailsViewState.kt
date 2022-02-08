@@ -7,5 +7,6 @@ data class DetailsViewState(
     val reposList: List<Repo> = listOf(),
     val followersQty: Int = 0,
     val isOfflineLoaded: Boolean = false,
+    val isOfflineDataEmpty: Boolean = false,
     val isOnline: Boolean = true
 )

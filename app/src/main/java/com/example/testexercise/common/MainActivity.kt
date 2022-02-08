@@ -18,6 +18,7 @@ import com.example.testexercise.data.retrofit.Author
 import com.example.testexercise.utils.ParamType
 import com.example.testexercise.presentation.DetailsScreen
 import com.example.testexercise.presentation.MainListScreen
+import com.example.testexercise.utils.NavDestinations
 
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
@@ -32,17 +33,17 @@ class MainActivity : ComponentActivity() {
             NavHost(
                 modifier = Modifier.fillMaxSize(),
                 navController = navController,
-                startDestination = "main_list"
+                startDestination = NavDestinations.LIST_ROUTE
             ) {
                 composable("main_list") {
                     MainListScreen(navController)
                 }
                 composable(
-                    "details/{author}",
+                    "${NavDestinations.DETAILS_ROUTE}/{author}",
                     arguments = listOf(navArgument("author") { type = ParamType() })
                 ) {
                     val args = it.arguments?.getParcelable<Author>("author")
-                    DetailsScreen(args!!)
+                    DetailsScreen(args!!, navController)
                 }
             }
         }

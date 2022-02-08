@@ -4,7 +4,7 @@ import com.example.testexercise.data.retrofit.converter.ResponseConverter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class RepositoryImpl(
+class RetrofitRepositoryImpl(
     private val restApi: RestApi,
     private val authorConverter: ResponseConverter<Author?, AuthorResponse>,
     private val repoConverter: ResponseConverter<Repo?, RepoResponse>,

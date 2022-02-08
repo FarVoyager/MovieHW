@@ -84,7 +84,7 @@ fun MainListScreen(navController: NavController) {
                                 fontSize = 12.sp,
                                 color = Color.DarkGray,
                                 textAlign = TextAlign.Center,
-                                text = if (viewState.isOnline) "" else "Оффлайн-режим"
+                                text = if (viewState.isOnline) "" else stringResource(R.string.main_list_screen_offline_mode_marking)
                             )
                         }
                     }

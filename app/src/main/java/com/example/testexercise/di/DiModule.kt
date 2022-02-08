@@ -7,7 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.room.Room
 import com.example.testexercise.data.retrofit.Author
 import com.example.testexercise.data.retrofit.RetrofitRepository
-import com.example.testexercise.data.retrofit.RepositoryImpl
+import com.example.testexercise.data.retrofit.RetrofitRepositoryImpl
 import com.example.testexercise.data.retrofit.RestApi
 import com.example.testexercise.data.room.converter.AuthorDataConverter
 import com.example.testexercise.data.room.Database
@@ -43,7 +43,13 @@ object DiModule {
         single { AuthorDataConverter() }
         single { RepoConverter() }
 
-        single<RoomRepository> { RoomRepositoryImpl(db = get(), authorConverter = get(), repoConverter = get()) }
+        single<RoomRepository> {
+            RoomRepositoryImpl(
+                db = get(),
+                authorConverter = get(),
+                repoConverter = get()
+            )
+        }
     }
 
     fun getRetrofitModule() = module {
@@ -77,16 +83,25 @@ object DiModule {
 
     fun getRepositoryModule() = module {
 
-        single<ResponseConverter<Author?, AuthorResponse>>(named("AUTHOR")) { AuthorResponseConverter() }
-        single<ResponseConverter<Repo?, RepoResponse>>(named("REPO")) { RepoResponseConverter() }
+        single<ResponseConverter<Author?, AuthorResponse>>(named(RESPONSE_CONVERTER_AUTHOR)) { AuthorResponseConverter() }
+        single<ResponseConverter<Repo?, RepoResponse>>(named(RESPONSE_CONVERTER_REPO)) { RepoResponseConverter() }
 
-        single<RetrofitRepository> { RepositoryImpl(restApi = get(), authorConverter = get(named("AUTHOR")), repoConverter = get(
-            named("REPO"))) }
+        single<RetrofitRepository> {
+            RetrofitRepositoryImpl(
+                restApi = get(),
+                authorConverter = get(named(RESPONSE_CONVERTER_AUTHOR)),
+                repoConverter = get(named(RESPONSE_CONVERTER_REPO))
+            )
+        }
+    }
+
+    fun getNavigationModule() = module {
         single { NavHostController(androidContext()) }
         single { NavDestinations }
     }
 
     fun getViewModelModule() = module {
+
         viewModel { (navController: NavController) ->
             MainListViewModel(
                 navController = navController,
@@ -97,9 +112,10 @@ object DiModule {
             )
         }
 
-        viewModel { (author: Author) ->
+        viewModel { (author: Author, navController: NavController) ->
             DetailsViewModel(
                 author = author,
+                navController = navController,
                 repository = get(),
                 roomRepository = get(),
                 isOnlineOnStart = get()
@@ -107,3 +123,6 @@ object DiModule {
         }
     }
 }
+
+private const val RESPONSE_CONVERTER_AUTHOR = "AUTHOR"
+private const val RESPONSE_CONVERTER_REPO = "REPO"

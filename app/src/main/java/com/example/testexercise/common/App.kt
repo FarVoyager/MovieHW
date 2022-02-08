@@ -20,7 +20,8 @@ class App : Application() {
                 DiModule.getRepositoryModule(),
                 DiModule.getViewModelModule(),
                 DiModule.getInternetConnectionModule(),
-                DiModule.getDatabaseModule()
+                DiModule.getDatabaseModule(),
+                DiModule.getNavigationModule()
             )
         }
     }

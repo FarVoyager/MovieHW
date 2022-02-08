@@ -13,8 +13,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.testexercise.R
 import com.example.testexercise.domain.BaseViewModel
 import com.example.testexercise.utils.isOnline
 import org.koin.androidx.compose.getKoin
@@ -26,25 +28,32 @@ fun NoInternetPlaceHolder(viewModel: BaseViewModel) {
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
             modifier = Modifier
-                .padding(start = 20.dp, end = 20.dp, top = 100.dp),
+                .padding(top = 100.dp)
+                .fillMaxWidth(),
             style = MaterialTheme.typography.h5,
             textAlign = TextAlign.Center,
-            text = "Нет соединения с интернетом"
+            text = stringResource(R.string.no_internet_placeholder_header)
         )
         Button(modifier = Modifier
             .fillMaxWidth()
             .padding(30.dp),
             onClick = {
                 viewModel.updateNetworkStatus(isOnline(context))
-                Toast.makeText(context, if (isOnline(context)) "Интернет-соединение восстановлено" else "Интернет-соединение отсутствует", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    if (isOnline(context)) R.string.internet_connection_restored_toast_text
+                    else
+                        R.string.internet_connection_off_toast_text,
+                    Toast.LENGTH_SHORT
+                ).show()
             }) {
-            Text(text = "Попробовать снова")
+            Text(text = stringResource(R.string.no_internet_placeholder_try_again_btn_text))
         }
         Button(modifier = Modifier
             .fillMaxWidth()
-            .padding(30.dp),
+            .padding(horizontal = 30.dp),
             onClick = { viewModel.loadLastData() }) {
-            Text(text = "Показать оффлайн-данные")
+            Text(text = stringResource(R.string.no_internet_placeholder_load_offline_btn_text))
         }
     }
 }
