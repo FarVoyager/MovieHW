@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.testexercise">
+    package="com.example.moviehw">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name=".common.App"
+        android:name="com.example.moviehw.common.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TestExercise">
         <activity
-            android:name=".common.MainActivity"
+            android:name="com.example.moviehw.common.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.TestExercise.NoActionBar"

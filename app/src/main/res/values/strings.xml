@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TestExercise</string>
+    <string name="app_name">MovieHW</string>
     <string name="details_screen_repositories_header">Repositories:</string>
     <string name="main_list_header">Список авторов GitHub API</string>
     <string name="details_screen_offline_data_marking">Оффлайн-данные</string>
