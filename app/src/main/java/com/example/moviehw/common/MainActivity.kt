@@ -26,6 +26,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     @OptIn(ExperimentalCoilApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        //comment
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
