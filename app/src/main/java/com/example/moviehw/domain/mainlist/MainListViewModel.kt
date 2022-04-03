@@ -4,8 +4,10 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.moviehw.BuildConfig
 import com.example.moviehw.data.retrofit.Author
 import com.example.moviehw.data.retrofit.RetrofitRepository
+import com.example.moviehw.data.retrofit.converter.MovieListResultObject
 import com.example.moviehw.data.room.RoomRepository
 import com.example.moviehw.utils.NavDestinations
 import com.example.moviehw.domain.BaseViewModel
@@ -17,6 +19,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+private const val KEY = BuildConfig.API_KEY
 
 class MainListViewModel(
     private val navController: NavController,
@@ -35,26 +39,15 @@ class MainListViewModel(
 
     private fun loadOnlineData() {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.authors().catch {
-                Log.d("Exception", "Exception while loading github authors: ${it.message}")
+            repository.movies().catch {
+                Log.d("Exception", "Exception while loading movies: ${it.message}")
             }.collect { list ->
                 if (list.isEmpty()) Log.d(
                     "Unexpected Behavior",
-                    "Received data is empty. Maybe some of Author fields are null"
+                    "Received data is empty. Maybe some of Movie fields are null"
                 )
-                roomRepository.insertAuthors(list)
                 _viewState.update {
-                    it.copy(authorsList = list, isLoading = false)
-                }
-            }
-        }
-    }
-
-    private fun loadOfflineData() {
-        viewModelScope.launch(Dispatchers.IO) {
-            roomRepository.getAuthors().collect { roomList ->
-                _viewState.update {
-                    it.copy(authorsList = roomList, isLoading = false, isOfflineLoaded = true)
+                    it.copy(moviesList = list, isLoading = false)
                 }
             }
         }
@@ -69,12 +62,8 @@ class MainListViewModel(
         }
     }
 
-    override fun loadLastData() {
-        loadOfflineData()
-    }
-
-    fun onItemSelected(author: Author) {
-        val json = Uri.encode(Gson().toJson(author))
+    fun onItemSelected(movie: MovieListResultObject) {
+        val json = Uri.encode(Gson().toJson(movie))
         navController.navigate("${navDestinations.DETAILS_ROUTE}/$json")
     }
 }

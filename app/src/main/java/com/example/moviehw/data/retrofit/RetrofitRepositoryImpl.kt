@@ -1,5 +1,6 @@
 package com.example.moviehw.data.retrofit
 
+import com.example.moviehw.data.retrofit.converter.MovieListResultObject
 import com.example.moviehw.data.retrofit.converter.ResponseConverter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -24,4 +25,9 @@ class RetrofitRepositoryImpl(
     override fun followers(url: String): Flow<List<Follower>> = flow {
         emit(restApi.getUserFollowers(url))
     }
+
+    override fun movies(): Flow<List<MovieListResultObject>> =
+        flow {
+            emit(restApi.getMovies())
+        }
 }

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">MovieHW</string>
     <string name="details_screen_repositories_header">Repositories:</string>
-    <string name="main_list_header">Список авторов GitHub API</string>
+    <string name="main_list_header">Movies API</string>
     <string name="details_screen_offline_data_marking">Оффлайн-данные</string>
     <string name="details_screen_empty_offline_data_text">Для этого автора нет сохраненных данных</string>
     <string name="details_screen_empty_offline_data_btn_text">Назад</string>

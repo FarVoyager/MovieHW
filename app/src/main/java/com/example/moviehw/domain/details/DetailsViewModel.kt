@@ -86,10 +86,6 @@ class DetailsViewModel(
         }
     }
 
-    override fun loadLastData() {
-        loadReposOffline(author.id)
-    }
-
     fun onBackPressed() {
         navController.navigateUp()
     }

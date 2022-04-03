@@ -49,11 +49,5 @@ fun NoInternetPlaceHolder(viewModel: BaseViewModel) {
             }) {
             Text(text = stringResource(R.string.no_internet_placeholder_try_again_btn_text))
         }
-        Button(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 30.dp),
-            onClick = { viewModel.loadLastData() }) {
-            Text(text = stringResource(R.string.no_internet_placeholder_load_offline_btn_text))
-        }
     }
 }

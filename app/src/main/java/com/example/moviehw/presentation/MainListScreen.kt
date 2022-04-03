@@ -102,10 +102,10 @@ fun MainListScreen(navController: NavController) {
                         }
                     }
                 } else {
-                    items(viewState.authorsList) {
+                    items(viewState.moviesList) {
                         AuthorItem(
-                            name = it.login,
-                            imageUrl = it.avatarUrl,
+                            name = it.title,
+                            imageUrl = it.poster_path!!,
                             onClick = {
                                 viewModel.onItemSelected(it)
                             }

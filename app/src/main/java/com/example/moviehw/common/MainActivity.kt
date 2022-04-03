@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import coil.annotation.ExperimentalCoilApi
 import com.example.moviehw.data.retrofit.Author
+import com.example.moviehw.data.retrofit.converter.MovieListResultObject
 import com.example.moviehw.utils.ParamType
 import com.example.moviehw.presentation.DetailsScreen
 import com.example.moviehw.presentation.MainListScreen
@@ -40,10 +41,10 @@ class MainActivity : ComponentActivity() {
                     MainListScreen(navController)
                 }
                 composable(
-                    "${NavDestinations.DETAILS_ROUTE}/{author}",
-                    arguments = listOf(navArgument("author") { type = ParamType() })
+                    "${NavDestinations.DETAILS_ROUTE}/{movie}",
+                    arguments = listOf(navArgument("movie") { type = ParamType() })
                 ) {
-                    val args = it.arguments?.getParcelable<Author>("author")
+                    val args = it.arguments?.getParcelable<MovieListResultObject>("movie")
                     DetailsScreen(args!!, navController)
                 }
             }

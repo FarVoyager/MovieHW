@@ -37,7 +37,7 @@ import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.moviehw.R
-import com.example.moviehw.data.retrofit.Author
+import com.example.moviehw.data.retrofit.converter.MovieListResultObject
 import com.example.moviehw.domain.details.DetailsViewModel
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
@@ -45,7 +45,7 @@ import org.koin.core.parameter.parametersOf
 @RequiresApi(Build.VERSION_CODES.M)
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun DetailsScreen(author: Author, navController: NavController) {
+fun DetailsScreen(author: MovieListResultObject, navController: NavController) {
 
     val viewModel: DetailsViewModel = getViewModel { parametersOf(author, navController) }
     val viewState by viewModel.viewState.collectAsState()
@@ -69,7 +69,7 @@ fun DetailsScreen(author: Author, navController: NavController) {
 
 @ExperimentalCoilApi
 @Composable
-private fun DetailsCard(viewModel: DetailsViewModel, author: Author) {
+private fun DetailsCard(viewModel: DetailsViewModel, movie: MovieListResultObject) {
     val viewState by viewModel.viewState.collectAsState()
     Card(
         modifier = Modifier
@@ -97,7 +97,7 @@ private fun DetailsCard(viewModel: DetailsViewModel, author: Author) {
                             .clip(CircleShape)
                             .height(150.dp),
                         contentScale = ContentScale.FillHeight,
-                        painter = rememberImagePainter(author.avatarUrl),
+                        painter = rememberImagePainter(movie.poster_path),
                         contentDescription = ""
                     )
                     Text(
@@ -116,7 +116,7 @@ private fun DetailsCard(viewModel: DetailsViewModel, author: Author) {
                             .wrapContentHeight(),
                         style = MaterialTheme.typography.h4,
                         textAlign = TextAlign.Center,
-                        text = author.login
+                        text = movie.title
                     )
                     Text(
                         modifier = Modifier

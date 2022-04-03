@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.room.Room
+import com.example.moviehw.data.retrofit.ApiInterceptor
 import com.example.moviehw.data.retrofit.Author
 import com.example.moviehw.data.retrofit.RetrofitRepository
 import com.example.moviehw.data.retrofit.RetrofitRepositoryImpl
@@ -55,7 +56,7 @@ object DiModule {
     fun getRetrofitModule() = module {
         single<RestApi> {
             Retrofit.Builder()
-                .baseUrl("https://api.github.com")
+                .baseUrl("https://api.themoviedb.org")
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .addConverterFactory(
                     GsonConverterFactory.create(
@@ -67,6 +68,7 @@ object DiModule {
                 )
                 .client(
                     OkHttpClient.Builder()
+                        .addInterceptor(ApiInterceptor)
                         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                         .build()
                 )
